@@ -56,6 +56,7 @@ namespace Shopping.Controllers
                     var filePath = "banners/" + fileName;
                     string accessKey = _config["AWSsettings:AccessKey"];
                     string secretKey = _config["AWSsettings:SecretKey"];
+                    string bucketName = _config["AWSsettings:BucketName"];
 
                     using (var amazonClient = new AmazonS3Client(accessKey, secretKey, Amazon.RegionEndpoint.EUWest3))
                     {
@@ -64,7 +65,7 @@ namespace Shopping.Controllers
                             model.ImageUrl.CopyTo(memoryStream);
                             var request = new TransferUtilityUploadRequest
                             {
-                                BucketName = "test-oniline-shop",
+                                BucketName =bucketName,
                                 Key = filePath,
                                 ContentType = model.ImageUrl.ContentType,
                                 InputStream = memoryStream
@@ -72,9 +73,9 @@ namespace Shopping.Controllers
                             var transferUtility = new TransferUtility(amazonClient);
                             await transferUtility.UploadAsync(request);
 
+                            string awsPath = _config["AWSS3BUCKET:Path"];
 
-
-                            var fileUrl = $"https://test-oniline-shop.s3.eu-west-3.amazonaws.com/{filePath}";
+                            var fileUrl = $"{awsPath}/{filePath}";
 
 
                             urltodatabase = fileUrl;

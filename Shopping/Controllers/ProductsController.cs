@@ -59,6 +59,7 @@ namespace Shopping.Controllers
         {
             string accessKey = _config["AWSsettings:AccessKey"];
             string secretKey = _config["AWSsettings:SecretKey"];
+            string bucketName = _config["AWSsettings:BucketName"];
             var urltodatabase = "";
             if (model.ImageUrl != null)
 
@@ -73,7 +74,7 @@ namespace Shopping.Controllers
                         model.ImageUrl.CopyTo(memoryStream);
                         var request = new TransferUtilityUploadRequest
                         {
-                            BucketName = "test-oniline-shop",
+                            BucketName = bucketName,
                             Key = filePath,
                             ContentType = model.ImageUrl.ContentType,
                             InputStream = memoryStream
@@ -83,7 +84,9 @@ namespace Shopping.Controllers
 
 
 
-                        var fileUrl = $"https://test-oniline-shop.s3.eu-west-3.amazonaws.com/{filePath}";
+                        string awsPath = _config["AWSS3BUCKET:Path"];
+
+                        var fileUrl = $"{awsPath}/{filePath}";
 
                         // Store the URL in the model or database
                         urltodatabase = fileUrl;
