@@ -1,0 +1,112 @@
+﻿body{
+    background-color:whitesmoke;
+}
+.login-container {
+    background-color: transparent; /* Fully transparent background */
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    backdrop-filter: blur(10px); /* Apply slight blur effect */
+}
+
+    .login-container h4 {
+        color: #000000;
+        margin-bottom: 20px;
+    }
+
+    .login-container input[type="text"], .login-container input[type="password"] {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border: none;
+        border-bottom: 2px solid #000000;
+        border-radius: 0;
+        font-size: 16px;
+        color: #000000;
+        background: transparent;
+    }
+
+    .login-container input::placeholder {
+        color: #000000;
+    }
+
+    .login-container input[type="submit"] {
+        width: 100%;
+        padding: 4px;
+        border: none;
+        border-radius: 5px;
+        background-color: #000000;
+        color: #ffffff;
+        font-size: 18px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+        .login-container input[type="submit"]:hover {
+            background-color: #333333;
+        }
+
+    .login-container a {
+        color: #000000;
+        text-decoration: none;
+        font-size: 16px;
+        margin-top: 20px;
+        display: inline-block;
+    }
+
+        .login-container a:hover {
+            text-decoration: underline;
+        }
+
+.register-link {
+    font-size: 18px;
+    font-weight: bold;
+    color: #000000;
+    margin-top: 20px;
+}
+
+    .register-link a {
+        color: blue;
+        text-decoration: none;
+    }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+.validation-message {
+    color: red;
+    font-size: 14px;
+    margin: 5px 0;
+}
+/* Media queries for responsive margin-top */
+@media (max-width: 576px) { /* Extra small devices (portrait phones, less than 576px) */
+    .login-container {
+        margin-top: 20px;
+    }
+}
+
+@media (min-width: 576px) { /* Small devices (landscape phones, 576px and up) */
+    .login-container {
+        margin-top: 50px;
+    }
+}
+
+@media (min-width: 768px) { /* Medium devices (tablets, 768px and up) */
+    .login-container {
+        margin-top: 75px;
+    }
+}
+
+@media (min-width: 992px) { /* Large devices (desktops, 992px and up) */
+    .login-container {
+        margin-top: 100px;
+    }
+}
+
+@media (min-width: 1200px) { /* Extra large devices (large desktops, 1200px and up) */
+    .login-container {
+        margin-top: 125px;
+    }
+}

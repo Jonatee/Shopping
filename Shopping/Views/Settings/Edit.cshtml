@@ -1,0 +1,117 @@
+﻿@model Shopping.Models.Setting
+
+@{
+    ViewData["Title"] = "Edit Settings";
+    Layout = "_Layout";
+}
+
+    <link rel="stylesheet" href="~/css/settings.css" />
+
+<div class="settings-container">
+    <div class="settings-header">
+        <h1>Settings</h1>
+        <h4>Manage your website settings</h4>
+    </div>
+
+    <div class="settings-form">
+        @if (TempData["message"] != null)
+        {
+            <div class="alert alert-success" role="alert">
+                @TempData["message"]
+            </div>
+        }
+
+        <form asp-action="Edit" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="Logo" />
+
+            <div class="form-group">
+                <label asp-for="Title" class="control-label">Website Title</label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Shipping" class="control-label">Shipping Cost</label>
+                <input asp-for="Shipping" class="form-control" type="number" step="0.01" />
+                <span asp-validation-for="Shipping" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Address" class="control-label">Business Address</label>
+                <input asp-for="Address" class="form-control" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Email" class="control-label">Contact Email</label>
+                <input asp-for="Email" class="form-control" type="email" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Phone" class="control-label">Contact Phone</label>
+                <input asp-for="Phone" class="form-control" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="CopyRight" class="control-label">Copyright Text</label>
+                <input asp-for="CopyRight" class="form-control" />
+                <span asp-validation-for="CopyRight" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Logo" class="control-label">Website Logo</label>
+                <input class="form-control" type="file" name="newLogo" accept="image/*" />
+                @if (!string.IsNullOrEmpty(Model.Logo))
+                {
+                    <img src="/images/@Model.Logo" class="img-thumbnail" alt="Current Logo" />
+                }
+                <span asp-validation-for="Logo" class="text-danger"></span>
+            </div>
+
+            <h3 class="mt-4 mb-3">Social Media Links</h3>
+            <div class="social-media-group">
+                <div class="form-group">
+                    <label asp-for="Instagram" class="control-label">Instagram</label>
+                    <input asp-for="Instagram" class="form-control" placeholder="https://instagram.com/..." />
+                    <span asp-validation-for="Instagram" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="FaceBook" class="control-label">Facebook</label>
+                    <input asp-for="FaceBook" class="form-control" placeholder="https://facebook.com/..." />
+                    <span asp-validation-for="FaceBook" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Twitter" class="control-label">Twitter</label>
+                    <input asp-for="Twitter" class="form-control" placeholder="https://twitter.com/..." />
+                    <span asp-validation-for="Twitter" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Youtube" class="control-label">YouTube</label>
+                    <input asp-for="Youtube" class="form-control" placeholder="https://youtube.com/..." />
+                    <span asp-validation-for="Youtube" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="GooglePlus" class="control-label">Google+</label>
+                    <input asp-for="GooglePlus" class="form-control" placeholder="https://plus.google.com/..." />
+                    <span asp-validation-for="GooglePlus" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group mt-4">
+                <button type="submit" class="btn btn-primary">Save Settings</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+

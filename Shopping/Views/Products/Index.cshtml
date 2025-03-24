@@ -1,0 +1,130 @@
+﻿@model IEnumerable<Product>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/assets/css/vendor/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css/slick.css">
+    <link rel="stylesheet" href="/assets/css/simple-line-icons.css">
+    <link rel="stylesheet" href="/assets/css/ionicons.min.css">
+    <link rel="stylesheet" href="/assets/css/font.awesome.css">
+    <link rel="stylesheet" href="/assets/css/animate.css">
+    <link rel="stylesheet" href="/assets/css/nice-select.css">
+    <link rel="stylesheet" href="/assets/css/jquery-ui.min.css">
+    <link rel="stylesheet" href="/assets/css/magnific-popup.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
+
+    <!-- Modernizr Script -->
+    <script src="/assets/js/vendor/modernizr-3.7.1.min.js"></script>
+</head>
+
+<body>
+    @if (Model != null && Model.Any())
+    {
+        <!-- shop area start -->
+        <div class="shop_section shop_reverse">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-9 col-md-12">
+                        <div class="breadcrumb_content">
+                            <ul>
+                                <li><a href="/home/index">home</a></li>
+                                <li>shop</li>
+                            </ul>
+                        </div>
+
+                        <!-- Shop Banner -->
+                        <div class="shop_banner d-flex align-items-center" style="background-image: url('/assets/img/bg/shop_bg.jpg');">
+                            <div class="shop_banner_text">
+                                <h2>essential <br> wears</h2>
+                                <p>The collections basic items <br> essential for all girls</p>
+                            </div>
+                        </div>
+
+                        <!-- Shop Toolbar -->
+                        <div class="shop_toolbar_wrapper d-flex justify-content-between align-items-center">
+                            <div class="page_amount">
+                                <p><span>@Model.Count()</span> Products Found</p>
+                            </div>
+                            <div class="toolbar_btn_wrapper d-flex align-items-center">
+                                <div class="view_btn">
+                                    <a class="view" href="#">VIEW</a>
+                                </div>
+                                <div class="shop_toolbar_btn">
+                                    <ul class="d-flex align-items-center">
+                                        <li><a href="#" class="active btn-grid-3" data-role="grid_3"><i class="ion-grid"></i></a></li>
+                                        <li><a href="#" class="btn-list" data-role="grid_list"><i class="ion-navicon"></i></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Shop Products -->
+                        <div class="row shop_wrapper">
+                            @foreach (var item in Model)
+                            {
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-6">
+                                    <div class="single_product">
+                                        <div class="product_thumb">
+                                            <!-- Product image -->
+                                            <a href="@Url.Action("ProductDetails", "Products", new { id = item.Id })">
+                                                <img class="primary_img" src="@Url.Content(item.ImageUrl)" alt="@item.Name">
+                                            </a>
+                                            <div class="product_action">
+                                                <ul>
+                                                    <li class="wishlist">
+                                                        <a href="#" data-tippy="Wishlist"><i class="icon-heart icons"></i></a>
+                                                    </li>
+                                                    <li class="quick_view">
+                                                        <a data-toggle="modal" data-target="#modal_box" data-tippy="Quick View" href="#"><i class="icon-size-fullscreen icons"></i></a>
+                                                    </li>
+                                                    <li class="compare">
+                                                        <a data-tippy="Compare" href="#"><i class="icon-refresh icons"></i></a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="product_label">
+                                                <span>-@item.Discount%</span>
+                                            </div>
+                                        </div>
+                                        <div class="product_content grid_content text-center">
+                                            <div class="product_ratting">
+                                                <ul class="d-flex justify-content-center">
+                                                    @for (int i = 0; i < 5; i++)
+                                                    {
+                                                        <li><a href="#"><i class="ion-android-star"></i></a></li>
+                                                    }
+                                                    <li><span>(2)</span></li>
+                                                </ul>
+                                            </div>
+                                            <h4 class="product_name"><a href="@Url.Action("ProductDetails", "Products", new { id = item.Id })">@item.Name</a></h4>
+                                            <div class="price_box">
+                                                <!-- Price logic -->
+                                                <span class="current_price">$@((item.Price - (item.Discount / 100 * item.Price)).ToString("F2"))</span>
+                                                <span class="old_price">₦@item.Price.ToString("N2")</span>
+                                            </div>
+                                            <div class="add_to_cart">
+                                                <a class="btn btn-primary" data-product-id="@item.Id" data-tippy="Add To Cart" data-tippy-inertia="true" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-placement="top">Add to Cart</a>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning mt-5">No products found.</div>
+    }
+</body>
+</html>

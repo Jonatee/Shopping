@@ -1,0 +1,30 @@
+﻿@model IEnumerable<Shopping.Models.Banner>
+
+@{
+    ViewData["Title"] = "Banner Index";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center">Banners</h2>
+    <div class="row justify-content-center">
+        @foreach (var banner in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <!-- Wrap the entire card or just the image with a link -->
+                <a href="@Url.Content(banner.Link)" class="text-decoration-none">
+                    <div class="card">
+                        @if (!string.IsNullOrEmpty(banner.ImageUrl))
+                        {
+                            <img src="@Url.Content(banner.ImageUrl)" class="card-img-top" alt="Banner Image">
+                        }
+                        <div class="card-body">
+                            <h5 class="card-title text-center">@banner.Title</h5>
+                            <p class="card-text text-center">@banner.SubTitle</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+</div>
+

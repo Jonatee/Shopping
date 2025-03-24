@@ -1,0 +1,76 @@
+﻿@model Shopping.ViewModels.CreateProductViewModel
+<link rel="stylesheet" href="/assets/css/vendor/bootstrap.min.css">
+<link rel="stylesheet" href="/assets/css/slick.css">
+<link rel="stylesheet" href="/assets/css/simple-line-icons.css">
+<link rel="stylesheet" href="/assets/css/ionicons.min.css">
+<link rel="stylesheet" href="/assets/css/font.awesome.css">
+<link rel="stylesheet" href="/assets/css/animate.css">
+<link rel="stylesheet" href="/assets/css/nice-select.css">
+<link rel="stylesheet" href="/assets/css/jquery-ui.min.css">
+<link rel="stylesheet" href="/assets/css/magnific-popup.css">
+<link rel="stylesheet" href="/assets/css/style.css">
+<link rel="stylesheet" href="~/assets/css/create-product.css">
+
+<!--modernizr min js here-->
+<script src="/assets/js/vendor/modernizr-3.7.1.min.js"></script>
+
+<div class="container">
+    <h2>Display a new Product</h2>
+    <form asp-action="Create" enctype="multipart/form-data" method="post">
+        <div class="form-group">
+            <input asp-for="Name" class="form-control" type="text" placeholder="Enter Name for Stock" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-tag" viewBox="0 0 16 16">
+                <path d="M3 2a1 1 0 0 1 1-1h2.586A1 1 0 0 1 7.707.293l5 5a1 1 0 0 1 0 1.414l-6 6a1 1 0 0 1-1.414 0l-5-5A1 1 0 0 1 0 7.586V5a1 1 0 0 1 1-1h2.586zM1 5v2.586l5 5L12.586 8l-5-5H4a1 1 0 0 0-1 1v1zm4-3.5A1.5 1.5 0 1 0 5.5 4 1.5 1.5 0 0 0 5 1.5z"/>
+            </svg>
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input asp-for="Price" class="form-control" type="number" min="1" placeholder="Enter Price for Stock" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-currency-dollar" viewBox="0 0 16 16">
+                <path d="M8.5 4a3.5 3.5 0 0 1 3.473 3h-1.416a2.5 2.5 0 1 0 0 1h1.416a3.5 3.5 0 1 1-7 0v-.5H2v1h2.5v1.75H3v1h1.5v1h1v-1H10v-1H5.5V7H10v-.5a4 4 0 0 0-8 0v.5H2v-1h2.5V4H4v1H3v1h1.5V4h1V3H3.5v.5H2.5a4.5 4.5 0 0 1 6-3zm-2 9a2.5 2.5 0 1 0 0 1h1v-1H6.5z"/>
+            </svg>
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input asp-for="Discount" class="form-control" type="number" min="1" placeholder="Enter Discount for Stock" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-percent" viewBox="0 0 16 16">
+                <path d="M6.5 3.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM10 11a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm2.5-9h-7l-6 6a.75.75 0 0 0 1.06 1.06l6-6h7a.75.75 0 0 0 0-1.06zM6.5 9a.75.75 0 0 0-1.06 1.06l6 6a.75.75 0 1 0 1.06-1.06l-6-6zM4.5 5.5a1 1 0 1 0-1-1 1 1 0 0 0 1 1zm5 6a1 1 0 1 0 1 1 1 1 0 0 0-1-1z"/>
+            </svg>
+            <span asp-validation-for="Discount" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <textarea asp-for="Description" class="form-control" placeholder="Enter Description of stocks"></textarea>
+            <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-file-earmark-text" viewBox="0 0 16 16">
+                <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zM13 14V5H9.5A1.5 1.5 0 0 1 8 3.5V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1zM9.5 1v2A1.5 1.5 0 0 0 11 4.5h2l-3.5-3.5zM6 8a.5.5 0 0 1 .5-.5H10a.5.5 0 0 1 0 1H6.5A.5.5 0 0 1 6 8zm-1 2a.5.5 0 0 0-.5.5v1A.5.5 0 0 0 5 12h5a.5.5 0 0 0 0-1H6v-.5A.5.5 0 0 0 5.5 10zm-.5-3a.5.5 0 0 0 .5.5h5A.5.5 0 0 0 11 6H6A.5.5 0 0 0 5.5 6zm-.5-1.5a.5.5 0 0 0 .5.5h5A.5.5 0 0 0 11 4H6a.5.5 0 0 0-.5.5z"/>
+            </svg>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input asp-for="Tags" class="form-control" type="text" placeholder="Tags" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-tags" viewBox="0 0 16 16">
+                <path d="M3 0a1 1 0 0 1 1 1v2H2V1a1 1 0 0 1 1-1zm0 4H2v2h1a1 1 0 0 1 1-1V4zm5.5-1.5V4h5v4h-4V5.5a1 1 0 1 0-2 0V8h4v5H8v1h4V8h4v4h-1.5A1.5 1.5 0 0 1 15 11V5.5a1.5 1.5 0 0 1 1-1.415V4H8V2H5.707L4 1H0v6h3V4h5V0h2v2h-.5z"/>
+            </svg>
+            <span asp-validation-for="Tags" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input asp-for="ImageUrl" class="form-control" type="file" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-image" viewBox="0 0 16 16">
+                <path d="M14.002 3a1 1 0 0 1 1 1v8.002a1 1 0 0 1-1 1H2.002a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h12zm0 1H2.002v8.002h12V4zM4.002 8.5a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0zm4.5 3.5l-2.5-3-1.5 2h8l-3-4-1.5 2z" />
+            </svg>
+            <span asp-validation-for="ImageUrl" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input asp-for="Quantity" class="form-control" type="number" min="1" placeholder="Enter the quantity of stocks" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-box-seam" viewBox="0 0 16 16">
+                <path d="M8.5 1.5a.5.5 0 0 1 .5.5v1h-1v-1a.5.5 0 0 1 .5-.5zM7 2v1h2V2H7zM3.5 2a.5.5 0 0 1 .5.5v1h-1v-1a.5.5 0 0 1 .5-.5zM2 3v1h12V3H2zm1 1v9.5a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5V4H3zm10 0v9.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 1 13.5V4h12z" />
+            </svg>
+            <span asp-validation-for="Quantity" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Display</button>
+    </form>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
