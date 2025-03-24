@@ -16,19 +16,12 @@ namespace Shopping.Controllers
     {
         private readonly ShoppingDb _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IConfiguration _configuration;
-        private readonly ILogger<CartController> _logger;
-
-        public CartController(
-            ShoppingDb context, 
-            IHttpContextAccessor httpContextAccessor, 
-            IConfiguration configuration,
-            ILogger<CartController> logger)
+         private readonly IConfiguration _configuration;
+        public CartController(ShoppingDb context, IHttpContextAccessor httpContextAccessor, IConfiguration iconfiguration)
         {
             _httpContextAccessor = httpContextAccessor;
-            _configuration = configuration;
+            _configuration = iconfiguration;
             _context = context;
-            _logger = logger;
         }
         public IActionResult Index()
         {
@@ -49,8 +42,6 @@ namespace Shopping.Controllers
         /// This case is manually handled by us.
         /// </param>
         /// <returns></returns>
-       
-
         [HttpPost]
         public IActionResult UpdateCart([FromBody] CartViewModel request)
         {
@@ -112,7 +103,7 @@ namespace Shopping.Controllers
             // otherwise, we return an empty cart list.
             if (!string.IsNullOrEmpty(prevCartItemsString))
             {
-                cartList = JsonConvert.DeserializeObject<List<CartViewModel>>(prevCartItemsString)!;
+                cartList = JsonConvert.DeserializeObject<List<CartViewModel>>(prevCartItemsString);
             }
 
             return cartList;
@@ -142,10 +133,10 @@ namespace Shopping.Controllers
                 {
                     Id = item.Id,
                     ImageName = item.ImageUrl,
-                    Price = item.Price - (item.Discount),
+                    Price = item.Price - (item.Discount ?? 0),
                     Title = item.Name,
                     Count = cartItems.Single(x => x.ProductId == item.Id).Count,
-                    RowSumPrice = (item.Price - (item.Discount)) * cartItems.Single(x => x.ProductId == item.Id).Count,
+                    RowSumPrice = (item.Price - (item.Discount ?? 0)) * cartItems.Single(x => x.ProductId == item.Id).Count,
                 };
 
                 result.Add(newItem);
@@ -163,42 +154,43 @@ namespace Shopping.Controllers
         public IActionResult Checkout()
         {
             var order = new Models.Order();
-            var products = GetProductsinCart();
-            var orderTotal = products?.Sum(x => x.RowSumPrice) ?? 0;
 
-            // Get shipping address from the order form
-            var shippingCost = CalculateShippingCost(order.Country, order.State, orderTotal);
-            order.Shipping = shippingCost;
+            var shipping = _context.Settings.First().Shipping;
+            if (shipping != null)
+            {
+                order.Shipping = shipping;
+            }
 
-            ViewData["Products"] = products;
+            ViewData["Products"] = GetProductsinCart();
             return View(order);
         }
-
         [Authorize]
         [HttpPost]
         public IActionResult ApplyCouponCode([FromForm] string couponCode)
         {
             var order = new Models.Order();
-            var products = GetProductsinCart();
-            var orderTotal = products?.Sum(x => x.RowSumPrice) ?? 0;
 
             var coupon = _context.Coupons.FirstOrDefault(c => c.Code == couponCode);
 
-            if (coupon == null)
+            if (coupon != null)
             {
-                ViewData["Products"] = products;
-                TempData["message"] = "Invalid coupon code";
+                order.CouponCode = coupon.Code;
+                order.CouponDiscount = coupon.Discount;
+            }
+            else
+            {
+                ViewData["Products"] = GetProductsinCart();
+                TempData["message"] = "Coupon not exist";
                 return View("Checkout", order);
             }
 
-            order.CouponCode = coupon.Code;
-            order.CouponDiscount = coupon.Discount;
-            
-            // Calculate shipping based on location
-            var shippingCost = CalculateShippingCost(order.Country, order.State, orderTotal);
-            order.Shipping = shippingCost;
+            var shipping = _context.Settings.First().Shipping;
+            if (shipping != null)
+            {
+                order.Shipping = shipping;
+            }
 
-            ViewData["Products"] = products;
+            ViewData["Products"] = GetProductsinCart();
             return View("Checkout", order);
         }
 
@@ -208,9 +200,13 @@ namespace Shopping.Controllers
         {
             if (!ModelState.IsValid)
             {
+
                 ViewData["Products"] = GetProductsinCart();
+
                 return View(order);
             }
+
+            //-------------------------------------------------------
 
             //check and find coupon
             if (!string.IsNullOrEmpty(order.CouponCode))
@@ -226,21 +222,18 @@ namespace Shopping.Controllers
                 {
                     TempData["message"] = "Coupon not exist";
                     ViewData["Products"] = GetProductsinCart();
+
                     return View(order);
                 }
             }
 
             var products = GetProductsinCart();
-            Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid userId);
+            Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid userGuid);
 
-            // Calculate shipping based on location and order total
-            var orderTotal = products.Sum(x => x.RowSumPrice);
-            var shippingCost = CalculateShippingCost(order.Country, order.State, orderTotal);
-            order.Shipping = shippingCost;
-            
-            order.SubTotal = orderTotal;
+            order.Shipping = _context.Settings.First().Shipping;
+            order.SubTotal = products.Sum(x => x.RowSumPrice);
             order.Total = (order.SubTotal + order.Shipping ?? 0);
-            order.UserId = userId;
+            order.UserId = userGuid;
 
             if (order.CouponDiscount != null)
             {
@@ -249,6 +242,8 @@ namespace Shopping.Controllers
 
             _context.Orders.Add(order);
             _context.SaveChanges();
+
+            //-------------------------------------------------------
 
             List<OrderDetail> orderDetails = new List<OrderDetail>();
 
@@ -265,7 +260,7 @@ namespace Shopping.Controllers
 
                 orderDetails.Add(orderDetailItem);
             }
-
+            //-------------------------------------------------------
             _context.OrderDetails.AddRange(orderDetails);
             _context.SaveChanges();
 
@@ -278,27 +273,14 @@ namespace Shopping.Controllers
             var order = _context.Orders.Find(orderId);
             if (order == null)
             {
-                _logger.LogWarning($"Order {orderId} not found");
                 return View("PaymentFailed");
             }
 
             var orderDetails = _context.OrderDetails.Where(x => x.OrderId == orderId).ToList();
-            if (!orderDetails.Any())
-            {
-                _logger.LogWarning($"No order details found for order {orderId}");
-                return View("PaymentFailed");
-            }
 
             var clientId = _configuration.GetValue<string>("PayPal:Key");
             var clientSecret = _configuration.GetValue<string>("PayPal:Secret");
             var mode = _configuration.GetValue<string>("PayPal:mode");
-
-            if (string.IsNullOrEmpty(clientId) || string.IsNullOrEmpty(clientSecret) || string.IsNullOrEmpty(mode))
-            {
-                _logger.LogError("PayPal configuration is missing");
-                return View("PaymentFailed");
-            }
-
             var apiContext = PaypalConfiguration.GetAPIContext(clientId, clientSecret, mode);
 
             try
@@ -320,21 +302,9 @@ namespace Shopping.Controllers
                     {
                         currency = "USD",
                         total = order.Total?.ToString("F"),
-                        //total = "5.00"
                     },
 
-                    ////item_list = new ItemList
-                    ////{
-                    ////    items = orderDetails.Select(p => new Item
-                    ////    {
-                    ////        name = p.ProductTitle,
-                    ////        currency = "USD",
-                    ////        price = p.ProductPrice.ToString("F"),
-                    ////        quantity = p.Count.ToString(),
-                    ////        sku = p.ProductId.ToString(),
-                    ////    }).ToList(),
-
-                    ////},
+                
                 }
             },
                     redirect_urls = new RedirectUrls
@@ -343,15 +313,7 @@ namespace Shopping.Controllers
                         return_url = $"{baseURI}orderId={order.Id}"
                     }
                 };
-                //Add shipping price
-                ////payment.transactions[0].item_list.items.Add(new Item
-                ////{
-                ////    name = "Shipping cost",
-                ////    currency = "USD",
-                ////    price = order.Shipping?.ToString("F"),
-                ////    quantity = "1",
-                ////    sku = "1",
-                ////});
+              
 
                 var createdPayment = payment.Create(apiContext);
                 var approvalUrl = createdPayment.links.FirstOrDefault(l => l.rel.ToLower() == "approval_url")?.href;
@@ -359,9 +321,8 @@ namespace Shopping.Controllers
                 _httpContextAccessor.HttpContext.Session.SetString("payment", createdPayment.id);
                 return Redirect(approvalUrl);
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                _logger.LogError(ex, "Error during PayPal redirect for order {OrderId}", orderId);
                 return View("PaymentFailed");
             }
         }
@@ -371,31 +332,17 @@ namespace Shopping.Controllers
             var order = _context.Orders.Find(orderId);
             if (order == null)
             {
-                _logger.LogWarning($"Order {orderId} not found during PayPal return");
                 return View("PaymentFailed");
             }
 
             var clientId = _configuration.GetValue<string>("PayPal:Key");
             var clientSecret = _configuration.GetValue<string>("PayPal:Secret");
             var mode = _configuration.GetValue<string>("PayPal:mode");
-
-            if (string.IsNullOrEmpty(clientId) || string.IsNullOrEmpty(clientSecret) || string.IsNullOrEmpty(mode))
-            {
-                _logger.LogError("PayPal configuration is missing during return");
-                return View("PaymentFailed");
-            }
-
             var apiContext = PaypalConfiguration.GetAPIContext(clientId, clientSecret, mode);
 
             try
             {
                 var paymentId = _httpContextAccessor.HttpContext.Session.GetString("payment");
-                if (string.IsNullOrEmpty(paymentId))
-                {
-                    _logger.LogWarning("No payment ID found in session");
-                    return View("PaymentFailed");
-                }
-
                 var paymentExecution = new PaymentExecution { payer_id = PayerID };
                 var payment = new Payment { id = paymentId };
 
@@ -403,7 +350,6 @@ namespace Shopping.Controllers
 
                 if (executedPayment.state.ToLower() != "approved")
                 {
-                    _logger.LogWarning($"Payment not approved for order {orderId}. State: {executedPayment.state}");
                     return View("PaymentFailed");
                 }
 
@@ -431,12 +377,12 @@ namespace Shopping.Controllers
 
                 return View("PaymentSuccess");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                _logger.LogError(ex, "Error during PayPal return processing for order {OrderId}", orderId);
                 return View("PaymentFailed");
             }
         }
 
     }
 }
+
