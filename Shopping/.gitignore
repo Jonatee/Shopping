@@ -21,6 +21,8 @@ mono_crash.*
 
 # Auto-generated files (VSCode)
 .vscode/*
+/.vs/Shopping/FileContentIndex
+/.gitignore
 
 # Build results
 [Dd]ebug/
