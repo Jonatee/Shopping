@@ -50,3 +50,5 @@ function updateCart(productId, count) {
         });
     });
 });
+
+

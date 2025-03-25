@@ -68,7 +68,8 @@ namespace Shopping.Controllers
                                 BucketName =bucketName,
                                 Key = filePath,
                                 ContentType = model.ImageUrl.ContentType,
-                                InputStream = memoryStream
+                                InputStream = memoryStream,
+                                CannedACL = S3CannedACL.PublicRead
                             };
                             var transferUtility = new TransferUtility(amazonClient);
                             await transferUtility.UploadAsync(request);

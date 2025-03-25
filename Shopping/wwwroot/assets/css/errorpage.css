@@ -1,0 +1,165 @@
+﻿/* Base styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f8;
+    color: #333;
+    text-align: center;
+    padding: 50px;
+    margin-top: 120px; /* Default top margin for larger screens (desktops and TVs) */
+}
+
+h1 {
+    font-size: 2.5rem;
+    color: #ff6b6b;
+    margin-bottom: 20px;
+}
+
+p {
+    font-size: 1.2rem;
+    color: #555;
+    margin-bottom: 30px;
+}
+
+/* Error Page Container */
+.error-container {
+    display: inline-block;
+    text-align: center;
+    background-color: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+    .error-container svg {
+        max-width: 150px;
+        margin-bottom: 30px;
+    }
+
+    .error-container a {
+        color: #007bff;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+        .error-container a:hover {
+            text-decoration: underline;
+        }
+
+    .error-container .email {
+        font-style: italic;
+        color: #007bff;
+    }
+
+/* Media Queries for Responsiveness */
+
+/* Large screens (TVs, desktops, large laptops) */
+@media (min-width: 1200px) {
+    body {
+        margin-top: 150px; /* More space for large screens */
+    }
+
+    .error-container {
+        width: 50%;
+        padding: 60px;
+    }
+
+        .error-container svg {
+            max-width: 180px;
+        }
+}
+
+/* Medium screens (Standard laptops, tablets) */
+@media (max-width: 1199px) and (min-width: 768px) {
+    body {
+        margin-top: 120px; /* Default top margin for laptops */
+    }
+
+    h1 {
+        font-size: 2.2rem;
+    }
+
+    p {
+        font-size: 1.1rem;
+    }
+
+    .error-container {
+        width: 60%;
+        padding: 50px;
+    }
+
+        .error-container svg {
+            max-width: 160px;
+        }
+}
+
+/* Small screens (Tablets, Small laptops) */
+@media (max-width: 767px) and (min-width: 481px) {
+    body {
+        margin-top: 100px; /* Adjust for medium screens */
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    p {
+        font-size: 1rem;
+    }
+
+    .error-container {
+        width: 70%;
+        padding: 40px;
+    }
+
+        .error-container svg {
+            max-width: 140px;
+        }
+}
+
+/* Very small screens (Portrait smartphones) */
+@media (max-width: 480px) {
+    body {
+        margin-top: 80px; /* Adjust for small screens */
+    }
+
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    p {
+        font-size: 0.9rem;
+    }
+
+    .error-container {
+        width: 80%;
+        padding: 30px;
+    }
+
+        .error-container svg {
+            max-width: 120px;
+        }
+}
+
+/* Extra small screens (Large smartphones or very small screens) */
+@media (max-width: 375px) {
+    body {
+        margin-top: 60px; /* Adjust for very small screens */
+    }
+
+    h1 {
+        font-size: 1.6rem;
+    }
+
+    p {
+        font-size: 0.9rem;
+    }
+
+    .error-container {
+        width: 90%;
+        padding: 20px;
+    }
+
+        .error-container svg {
+            max-width: 100px;
+        }
+}

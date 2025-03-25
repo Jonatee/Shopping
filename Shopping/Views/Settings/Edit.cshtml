@@ -67,7 +67,7 @@
                 <input class="form-control" type="file" name="newLogo" accept="image/*" />
                 @if (!string.IsNullOrEmpty(Model.Logo))
                 {
-                    <img src="/images/@Model.Logo" class="img-thumbnail" alt="Current Logo" />
+                    <img src="@Url.Content(Model.Logo)" class="img-thumbnail" alt="Current Logo" />
                 }
                 <span asp-validation-for="Logo" class="text-danger"></span>
             </div>

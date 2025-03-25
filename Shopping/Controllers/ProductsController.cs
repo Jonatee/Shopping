@@ -5,6 +5,7 @@ using Amazon.S3.Transfer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Shopping.Context;
 using Shopping.External_Services;
 using Shopping.Models;
@@ -12,6 +13,7 @@ using Shopping.ViewModels;
 using System;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Shopping.Controllers
@@ -36,12 +38,58 @@ namespace Shopping.Controllers
                 return View();
             }
             return View(getallproducts);
+
+        }
+        public IActionResult SearchProducts(string SearchText)
+        {
+            var products = _context.Products
+                 .Where(x =>
+                 EF.Functions.Like(x.Name, "%" + SearchText + "%") ||
+                 EF.Functions.Like(x.Tags, "%" + SearchText + "%")
+                 )
+                 .OrderBy(x => x.Name)
+                 .ToList();
+            return View("Index", products);
+        }
+        [HttpPost]
+        public IActionResult SubmitComment(string name, string email, string comment, Guid productId)
+        {
+            if (!string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(email) && !string.IsNullOrEmpty(comment))
+            {
+                Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
+                Match match = regex.Match(email);
+                if (!match.Success)
+                {
+                    TempData["ErrorMessage"] = "Email is not valid";
+                    return Redirect("/Products/ProductDetails/" + productId);
+                }
+                var newComment = new Comment()
+                {
+                    CommentText = comment,
+                    Name = name,
+                    ProductId = productId,
+                    Email = email
+                };
+                _context.Comments.Add(newComment);
+                _context.SaveChanges();
+
+                TempData["SuccessMessage"] = "Your comment submited successfully";
+                return Redirect("/Products/ProductDetails/" + productId);
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Please complete your information";
+                return Redirect("/Products/ProductDetails/" + productId);
+            }
+
         }
 
         // GET: Products/Details/5
         public IActionResult ProductDetails(Guid id)
         {
             var product = _context.Products.FirstOrDefault(x => x.Id == id);
+            ViewData["banners"] = _context.Banners.ToList();
+            ViewData["comments"] = _context.Comments.Where(x => x.ProductId == id).ToList();
             return View(product);
         }
 
@@ -77,7 +125,8 @@ namespace Shopping.Controllers
                             BucketName = bucketName,
                             Key = filePath,
                             ContentType = model.ImageUrl.ContentType,
-                            InputStream = memoryStream
+                            InputStream = memoryStream,
+                            CannedACL = S3CannedACL.PublicRead
                         };
                         var transferUtility = new TransferUtility(amazonClient);
                         await transferUtility.UploadAsync(request);
@@ -135,71 +184,7 @@ namespace Shopping.Controllers
             return View(product);
         }
 
-        // POST: Products/Edit/5
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public IActionResult Edit(int id, CreateProductViewModel model)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var product = _context.Products.Find(id);
-        //        if (product == null)
-        //        {
-        //            return NotFound();
-        //        }
-
-        //        // Update product data
-        //        product.Name = model.Name;
-        //        product.Description = model.Description;
-        //        product.Discount = model.Discount;
-        //        product.Price = model.Price;
-        //        product.Quantity = model.Quantity;
-        //        product.Tags = model.Tags;
-
-        //        // If there's a new image, upload it to S3 and update the URL
-        //        if (model.ImageUrl != null)
-        //        {
-        //            var fileName = Path.GetFileName(model.ImageUrl.FileName);
-        //            var filePath = "products/" + fileName; // Optional: Use a folder structure like 'products/'
-
-        //            var putRequest = new PutObjectRequest
-        //            {
-        //                BucketName = _awsSettings.BucketName,
-        //                Key = filePath,
-        //                InputStream = model.ImageUrl.OpenReadStream(),
-        //                ContentType = model.ImageUrl.ContentType,
-        //                AutoCloseStream = true
-        //            };
-
-        //            try
-        //            {
-        //                var response = _s3Client.PutObjectAsync(putRequest).Result;
-        //                if (response.HttpStatusCode == System.Net.HttpStatusCode.OK)
-        //                {
-        //                    var fileUrl = $"https://{_awsSettings.BucketName}.s3.{_awsSettings.Region}.amazonaws.com/{filePath}";
-        //                    product.ImageUrl = fileUrl; // Update image URL
-        //                }
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                ModelState.AddModelError("", $"Error uploading image: {ex.Message}");
-        //                return View(model); // Return back if the image upload fails
-        //            }
-        //        }
-
-        //        try
-        //        {
-        //            _context.SaveChanges();
-        //            return RedirectToAction(nameof(Index));
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            ModelState.AddModelError("", $"An error occurred while updating the product: {ex.Message}");
-        //            return View(model);
-        //        }
-        //    }
-        //    return View(model);
-        //}
+     
 
         // GET: Products/Delete/5
         [Authorize(Roles = "Admin")]

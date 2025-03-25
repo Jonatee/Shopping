@@ -1,4 +1,8 @@
-﻿
+﻿@inject Shopping.Context.ShoppingDb _context;
+
+@{
+    var MySttings = _context.Settings.FirstOrDefault();
+}
 
 <!doctype html>
 <html class="no-js" lang="en">
@@ -6,7 +10,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>@ViewBag.Title - Uthr – Fashion eCommerce HTML Template</title>
+    <title>@ViewBag.Title - @MySttings.Title</title>
     <meta name="description" content="Uthr Fashion eCommerce Bootstrap 5 Template is an innovative and modern e-commerce online store website template." />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="profile" href="https://gmpg.org/xfn/11">
@@ -48,18 +52,17 @@
                         </div>
                         <div class="header_contact_info">
                             <ul class="d-flex">
-                                <li class="text-white"> <i class="icons icon-phone"></i> <a href="tel:+05483716566">+054 8371 65 66</a></li>
+                                <li class="text-white"> <i class="icons icon-phone"></i> <a href="@MySttings.Phone"</a></li>
                                 <li class="text-white"> <i class="icon-envelope-letter icons"></i> <a href="#">uthrstore@domain.com</a></li>
                             </ul>
                         </div>
                         <div class="header_social d-flex">
                             <span>Follow us</span>
                             <ul class="d-flex">
-                                <li><a href="#"><i class="icon-social-twitter icons"></i></a></li>
-                                <li><a href="#"><i class="icon-social-facebook icons"></i></a></li>
-                                <li><a href="#"><i class="icon-social-instagram icons"></i></a></li>
-                                <li><a href="#"><i class="icon-social-youtube icons"></i></a></li>
-                                <li><a href="#"><i class="icon-social-pinterest icons"></i></a></li>
+                                <li><a href="@MySttings.Twitter"><i class="icon-social-twitter icons"></i></a></li>
+                                <li><a href="@MySttings.FaceBook"><i class="icon-social-facebook icons"></i></a></li>
+                                <li><a href="@MySttings.Instagram"><i class="icon-social-instagram icons"></i></a></li>
+                                <li><a href="@MySttings.Youtube"><i class="icon-social-youtube icons"></i></a></li>
                             </ul>
                         </div>
                         <div class="language_currency">
@@ -95,7 +98,7 @@
                                 </li>
                                 <li><a href="#">sale</a></li>
                                 <li class="menu-item-has-children">
-                                    <a href="@Url.Action("Cart", "Cart")">cart</a>
+                                    <a href="@Url.Action("Index", "Cart")">cart</a>
                                 </li>
                                 <li class="menu-item-has-children">
                                     <a href="@Url.Action("Checkout", "Cart")">Checkout</a>
@@ -132,8 +135,8 @@
                                     <ul class="d-flex">
                                         <li><a class="active" href="@Url.Action("Index", "Home")">demo</a> </li>
                                         <li><a href="@Url.Action("Index", "Products")">shop</a></li>
-                                        <li><a href="@Url.Action("ProductDetails", "Products")">product</a></li>
-                                        <li><a href="#">sale</a></li>
+                                        <li><a href="@Url.Action("Index", "Cart")">product</a></li>
+                                        <li><a href="@Url.Action("Checkout", "Cart")">sale</a></li>
                                     </ul>
                                 </nav>
                             </div>
@@ -177,16 +180,16 @@
                 <div class="col-lg-5 col-md-5 col-sm-5">
                     <div class="footer_widget_list">
                         <div class="footer_logo">
-                            <a href="#"><img src="~/assets/img/logo/logo.png" alt=""></a>
+                            <a href="#"><img src="@Url.Content(MySttings.Logo)" alt=""></a>
                         </div>
                         <div class="footer_contact">
                             <div class="footer_contact_list">
                                 <span>Our Location</span>
-                                <p>869 General Village Apt. 645, Moorebury, USA</p>
+                                <p>@MySttings.Address</p>
                             </div>
                             <div class="footer_contact_list">
                                 <span>24/7 hotline:</span>
-                                <a href="tel:(+99)0521282399">(+99) 052 128 2399</a>
+                                <a href="@MySttings.Phone"></a>
                             </div>
                         </div>
                     </div>
@@ -202,15 +205,15 @@
                         </div>
                         <div class="footer_social">
                             <ul class="d-flex justify-content-end">
-                                <li><a href="https://twitter.com" data-tippy="Twitter" data-tippy-inertia="true" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-placement="top"><i class="ion-social-twitter"></i></a></li>
-                                <li><a href="https://www.facebook.com" data-tippy="Facebook" data-tippy-inertia="true" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-placement="top"><i class="ion-social-facebook"></i></a></li>
-                                <li><a href="https://www.google.com" data-tippy="googleplus" data-tippy-inertia="true" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-placement="top"><i class="ion-social-googleplus-outline"></i></a></li>
-                                <li><a href="https://www.instagram.com" data-tippy="Instagram" data-tippy-inertia="true" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-placement="top"><i class="ion-social-instagram-outline"></i></a></li>
-                                <li><a href="https://www.youtube.com" data-tippy="Youtube" data-tippy-inertia="true" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-placement="top"><i class="ion-social-youtube"></i></a></li>
+                                <li><a href="@MySttings.Twitter" data-tippy="Twitter" data-tippy-inertia="true" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-placement="top"><i class="ion-social-twitter"></i></a></li>
+                                <li><a href="@MySttings.FaceBook" data-tippy="Facebook" data-tippy-inertia="true" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-placement="top"><i class="ion-social-facebook"></i></a></li>
+                                <li><a href="@MySttings.GooglePlus" data-tippy="googleplus" data-tippy-inertia="true" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-placement="top"><i class="ion-social-googleplus-outline"></i></a></li>
+                                <li><a href="@MySttings.Instagram" data-tippy="Instagram" data-tippy-inertia="true" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-placement="top"><i class="ion-social-instagram-outline"></i></a></li>
+                                <li><a href="@MySttings.Youtube" data-tippy="Youtube" data-tippy-inertia="true" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-placement="top"><i class="ion-social-youtube"></i></a></li>
                             </ul>
                         </div>
                         <div class="copyright_right">
-                            <p>©2021 <span>Uthr</span>. made with <i class="ion-heart"></i> by <a href="https://hasthemes.com" target="_blank">HasThemes</a></p>
+                            <p> @MySttings.CopyRight"</p>
                         </div>
                     </div>
                 </div>

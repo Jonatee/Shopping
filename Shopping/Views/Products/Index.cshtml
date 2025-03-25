@@ -105,7 +105,11 @@
                                             <h4 class="product_name"><a href="@Url.Action("ProductDetails", "Products", new { id = item.Id })">@item.Name</a></h4>
                                             <div class="price_box">
                                                 <!-- Price logic -->
-                                                <span class="current_price">$@((item.Price - (item.Discount / 100 * item.Price)).ToString("F2"))</span>
+                                                <span class="current_price">
+                                                    ₦@((item.Price - (item.Discount.HasValue ? (item.Discount.Value / 100 * item.Price) : 0)).ToString("F2"))
+                                                </span>
+
+
                                                 <span class="old_price">₦@item.Price.ToString("N2")</span>
                                             </div>
                                             <div class="add_to_cart">

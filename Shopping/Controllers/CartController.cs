@@ -33,15 +33,6 @@ namespace Shopping.Controllers
             Response.Cookies.Delete("Cart");
             return Redirect("/");
         }
-        /// <summary>
-        /// Add or update the shopping cart
-        /// </summary>
-        /// <param name="productId">Product ID</param>
-        /// <param name="count">
-        ///  If quantity is zero, it means the intention is to remove the item. 
-        /// This case is manually handled by us.
-        /// </param>
-        /// <returns></returns>
         [HttpPost]
         public IActionResult UpdateCart([FromBody] CartViewModel request)
         {
