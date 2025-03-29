@@ -174,7 +174,7 @@ namespace Shopping.Controllers
                 mail.Subject = "Recovery code";
                 mail.Body = "Your recovery code: " + recoverycode;
                 SmtpServer.Port = 587;
-                SmtpServer.Credentials = new System.Net.NetworkCredential(_config["Email:Mail"], _config["Email:Mail"]);
+                SmtpServer.Credentials = new System.Net.NetworkCredential(_config["Email:Mail"], _config["EmaiL:MailPassword"]);
                 SmtpServer.EnableSsl = true;
                 SmtpServer.Send(mail);
             }
